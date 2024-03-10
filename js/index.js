@@ -1,17 +1,19 @@
+// Event listener for when the DOM is fully loaded
 document.addEventListener("DOMContentLoaded", () => {
+  // DOM elements for car listings and filters
   const carListingsSection = document.getElementById("carListings");
   const filtersSection = document.getElementById("filters");
 
   initInterface();
-
+  // Function to initialize the user interface
   function initInterface() {
     generateCarListings(usedCars);
     generateFilters(usedCars);
   }
-
+  // Function to generate and display car listings
   function generateCarListings(cars) {
     carListingsSection.innerHTML = "";
-
+    // Create and append HTML elements for each car listing
     if (cars.length > 0) {
       cars.forEach((car) => {
         const carCard = document.createElement("div");
@@ -27,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
         carListingsSection.appendChild(carCard);
       });
     } else {
+      // Display message when there are no matching cars
       const noResultsMessage = document.createElement("p");
       noResultsMessage.textContent =
         "No cars available. Please try again with different filters.";
@@ -34,10 +37,11 @@ document.addEventListener("DOMContentLoaded", () => {
       carListingsSection.appendChild(noResultsMessage);
     }
   }
-
+  // Function to generate and display filter options
   function generateFilters(cars) {
     filtersSection.innerHTML = "";
 
+    // Create and append HTML elements for various filter options
     const yearFilter = document.createElement("div");
     yearFilter.innerHTML = `
             <label for="minYear">Min. Car Year:</label>
@@ -87,14 +91,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     filtersSection.appendChild(applyFiltersButton);
   }
-
+  // Function to retrieve unique car make options
   function getCarMakeOptions(cars) {
     const uniqueMakes = [...new Set(cars.map((car) => car.make))];
     return uniqueMakes
       .map((make) => `<option value="${make}">${make}</option>`)
       .join("");
   }
-
+  // Function to generate radio button options for maximum mileage
   function getMaxMileageOptions() {
     const mileageOptions = [
       "<15K",
@@ -114,12 +118,13 @@ document.addEventListener("DOMContentLoaded", () => {
       )
       .join("");
   }
-
+  // Function to generate price range options
   function getPriceRangeOptions(cars) {
     const prices = cars.map((car) => car.price);
     const minPrice = Math.min(...prices);
     const maxPrice = Math.max(...prices);
 
+    // Define price ranges and generate options
     const ranges = [
       { min: 0, max: 5000 },
       { min: 5001, max: 10000 },
@@ -144,7 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
       })
       .join("");
   }
-
+  // Function to generate checkbox options for car colors
   function getCarColorOptions(cars) {
     const uniqueColors = [...new Set(cars.map((car) => car.color))];
     return uniqueColors
@@ -154,10 +159,8 @@ document.addEventListener("DOMContentLoaded", () => {
       )
       .join("");
   }
-
+  //Function to handle filter button click and apply filters
   function handleFilters() {
-    console.log("Handling Filters...");
-
     const minYear = parseInt(document.getElementById("minYear").value) || 0;
     const maxYear =
       parseInt(document.getElementById("maxYear").value) || Infinity;
@@ -173,7 +176,8 @@ document.addEventListener("DOMContentLoaded", () => {
     )
       .filter((checkbox) => checkbox.checked)
       .map((checkbox) => checkbox.value);
-
+    // Log filter values for debugging
+    console.log("Handling Filters...");
     console.log("minYear:", minYear);
     console.log("maxYear:", maxYear);
     console.log("selectedMakes:", selectedMakes);
@@ -181,13 +185,14 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("selectedPriceRange:", selectedPriceRange);
     console.log("selectedColors:", selectedColors);
 
+    // Apply filters and generate updated car listings
     const filteredCars = usedCars.filter((car) => {
       const carYear = car.year;
       const carMake = car.make;
       const carMileage =
         parseInt(car.mileage.replace(" miles", "").replace(",", "")) || 0;
       const carPrice = car.price;
-
+      // Filter conditions for each aspect
       // Filter by Year
       const isYearInRange = carYear >= minYear && carYear <= maxYear;
 
@@ -208,6 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const isColorSelected =
         selectedColors.length === 0 || selectedColors.includes(car.color);
 
+      // Combine all filter conditions
       return (
         isYearInRange &&
         isMakeSelected &&
@@ -216,7 +222,9 @@ document.addEventListener("DOMContentLoaded", () => {
         isColorSelected
       );
     });
-
+    // Generate updated car listings based on applied filters
     generateCarListings(filteredCars);
   }
+  // Call the initialization function
+  initInterface();
 });

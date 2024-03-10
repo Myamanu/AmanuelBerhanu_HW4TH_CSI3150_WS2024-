@@ -145,6 +145,7 @@ button {
 button:hover {
   background-color: #68da5b;
 }
+/* styling no-results */
 .no-results {
     text-align: center;
     font-size: 18px;
